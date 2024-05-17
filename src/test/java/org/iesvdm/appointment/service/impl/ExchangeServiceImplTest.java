@@ -1,9 +1,8 @@
 package org.iesvdm.appointment.service.impl;
 
 import net.bytebuddy.asm.Advice;
-import org.iesvdm.appointment.entity.Appointment;
-import org.iesvdm.appointment.entity.AppointmentStatus;
-import org.iesvdm.appointment.entity.Customer;
+import org.assertj.core.api.Assertions;
+import org.iesvdm.appointment.entity.*;
 import org.iesvdm.appointment.repository.AppointmentRepository;
 import org.iesvdm.appointment.repository.ExchangeRequestRepository;
 import org.iesvdm.appointment.repository.impl.AppointmentRepositoryImpl;
@@ -14,6 +13,7 @@ import org.mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class ExchangeServiceImplTest {
@@ -25,17 +25,17 @@ public class ExchangeServiceImplTest {
     private NotificationService notificationService;
 
     @Mock
-    private  ExchangeRequestRepository exchangeRequestRepository;
+    private ExchangeRequestRepository exchangeRequestRepository;
 
     @InjectMocks
     private ExchangeServiceImpl exchangeService;
 
     private Customer customer1 = new Customer(1
-            ,"paco"
+            , "paco"
             , "1234"
             , new ArrayList<>());
     private Customer customer2 = new Customer(2
-            ,"pepe"
+            , "pepe"
             , "1111"
             , new ArrayList<>());
 
@@ -43,18 +43,18 @@ public class ExchangeServiceImplTest {
     private ArgumentCaptor<Integer> appointmentIdCaptor;
 
     @Spy
-    private Appointment appointment1 = new Appointment(LocalDateTime.of(2024, 6, 10,6, 0)
-            , LocalDateTime.of(2024, 6, 16,18, 0)
+    private Appointment appointment1 = new Appointment(LocalDateTime.of(2024, 6, 10, 6, 0)
+            , LocalDateTime.of(2024, 6, 16, 18, 0)
             , null
             , null
             , AppointmentStatus.SCHEDULED
             , customer1
             , null
-                                );
+    );
 
     @Spy
-    private Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 5, 18,8, 15)
-            , LocalDateTime.of(2024, 5, 18,10, 15)
+    private Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 5, 18, 8, 15)
+            , LocalDateTime.of(2024, 5, 18, 10, 15)
             , null
             , null
             , AppointmentStatus.SCHEDULED
@@ -81,7 +81,15 @@ public class ExchangeServiceImplTest {
      */
     @Test
     void checkIfEligibleForExchange() {
+        Customer c1 = new Customer(3
+                , "ivan"
+                , "luque"
+                , new ArrayList<>());
 
+        Mockito.when(appointment1.getCustomer()).thenReturn(c1);
+        Mockito.when(appointmentRepository.getOne(1)).thenReturn(appointment1);
+
+        Assertions.assertThat(exchangeService.checkIfEligibleForExchange(3, 1)).isTrue();
     }
 
 
@@ -96,7 +104,14 @@ public class ExchangeServiceImplTest {
      */
     @Test
     void getEligibleAppointmentsForExchangeTest() {
+        appointment1.setId(1);
+        appointment2.setId(2);
 
+        appointmentRepository.save(appointment1);
+        appointmentRepository.save(appointment2);
+
+        Assertions.assertThat(exchangeService.getEligibleAppointmentsForExchange(2)).containsOnly(appointment1);
+        Mockito.verify(appointmentRepository).getOne(appointmentIdCaptor.capture());
     }
 
     /**
@@ -106,7 +121,12 @@ public class ExchangeServiceImplTest {
      */
     @Test
     void checkIfExchangeIsPossibleTest() {
+        Mockito.when(appointment2.getCustomer()).thenReturn(customer1);
+        // Mockito.doThrow(new RuntimeException()).when(exchangeService).checkIfExchangeIsPossible(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
 
+        Assertions.assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+            exchangeService.checkIfExchangeIsPossible(1, 2, 1);
+        });
     }
 
     /**
@@ -118,8 +138,19 @@ public class ExchangeServiceImplTest {
      * rechazado (REJECTED).
      * Verfifica se invoca al método con el exchangeRequest del stub.
      */
-     void rejectExchangeTest() {
+    @Test
+    void rejectExchangeTest() {
+        ExchangeRequest er = Mockito.spy(new ExchangeRequest());
+        er.setId(1);
+        er.setRequestor(appointment1);
 
-     }
+        Mockito.when(exchangeRequestRepository.getOne(Mockito.anyInt())).thenReturn(er);
 
+        ArgumentCaptor<ExchangeRequest> exchangeCaptor = ArgumentCaptor.forClass(ExchangeRequest.class);
+        exchangeService.rejectExchange(1);
+
+        InOrder inOrder = Mockito.inOrder(exchangeRequestRepository, er);
+        inOrder.verify(er).setStatus(ExchangeStatus.REJECTED);
+        inOrder.verify(exchangeRequestRepository).save(exchangeCaptor.capture());
+    }
 }
