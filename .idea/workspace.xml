@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4924cbe-497e-42d5-8035-47d9055b38bf" name="Changes" comment="inicial">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/iesvdm/appointment/repository/AppointmentRepositoryImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/iesvdm/appointment/repository/AppointmentRepositoryImplTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/iesvdm/appointment/service/impl/ExchangeServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/iesvdm/appointment/service/impl/ExchangeServiceImplTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/iesvdm/sudoku/SudokuTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/iesvdm/sudoku/SudokuTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +37,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "feature-test-sudoku",
     "last_opened_file_path": "/home/ivanluque/dev/ent_sis/examenes/pruebapracticaud4b",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -161,7 +157,7 @@
       <updated>1715841695703</updated>
       <workItem from="1715841696736" duration="9923000" />
       <workItem from="1715873916029" duration="12533000" />
-      <workItem from="1715927201310" duration="8922000" />
+      <workItem from="1715927201310" duration="9076000" />
     </task>
     <servers />
   </component>
